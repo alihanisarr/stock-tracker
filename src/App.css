@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+
+th {
+  color: #2bb3b1;   /* teal color like screenshot */
+  padding: 12px 20px;
+  text-align: left;
+}
+td {
+  padding: 12px 20px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr {
+  background-color: #edcbcb;
+}
