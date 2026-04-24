@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import "./App.css";
-import logo from "./assets/Koala_climbing_tree.jpg"
-const API_KEY = "d7k7kvpr01qn1u2ghalgd7k7kvpr01qn1u2gham0"
+const API_KEY = process.env.REACT_APP_API_KEY
 
 
 function App() {
@@ -10,11 +9,17 @@ function App() {
   const[seconds, setSeconds] = useState("")
   const[rows, setRows] = useState([])
   const[isTracking, setIsTracking] = useState(false)
+  const[error, setError] = useState("")
 
   function fetchStock(){
     fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`)
     .then(response => response.json())
     .then(data => {
+      if (!data || data.c === undefined || data.c === 0) {
+        setError(`${symbol} is not a valid stock symbol. Please try again`)
+        setIsTracking(false)
+        return
+      }
       const newRow = {
         open: data.o,
         high: data.h,
@@ -26,9 +31,10 @@ function App() {
       setRows(prevRows => [...prevRows, newRow])
     })
     .catch(error => {
+      setError("Error fetching stock data. Please try again later.")
       console.error("Error fetching stock data:", error)
+      setIsTracking(false)
     })
-
   }
 
   useEffect(() => {
@@ -50,6 +56,7 @@ function App() {
       <input type="number" placeholder="Seconds" value={seconds} onChange={(e) => setSeconds(e.target.value)} />
 
       <button onClick={() => setIsTracking(true)}>Start Tracking</button>
+      {error && <p style={{color:"rgb(255, 81, 81)"}}>{error}</p>}
 
       <table>
         <thead>
@@ -75,7 +82,7 @@ function App() {
           ))}
           </tbody>
       </table>
-      <img src={logo} alt="Koala climbing tree" />  
+      
     </div>
   
   )
